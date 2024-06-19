@@ -1,17 +1,20 @@
-const path = require('path')
-const express = require('express')
 require('dotenv').config({ path: '.env.local' })
 require('colors')
+const path = require('path')
+const express = require('express')
+const mongoose = require('mongoose')
+const connectDB = require('./config/connectDB')
 
 // middleware imports
 const cors = require('cors')
 const corsOptions = require('./config/corsOptions')
-const { logger } = require('./middleware/logger')
+const { logger, logEvents } = require('./middleware/logger')
 const errorHandler = require('./middleware/errorHandler')
 const cookieParser = require('cookie-parser')
 
 const PORT = process.env.PORT || 3500
 const app = express()
+connectDB()
 
 // middleware
 app.use(logger)
@@ -35,6 +38,16 @@ app.all('*', (req, res) => {
 
 app.use(errorHandler)
 
-app.listen(PORT, () => {
-  console.log(`REPAIR NOTES SERVER RUNNING ON PORT: ${PORT}`.green.inverse)
+mongoose.connection.once('open', () => {
+  app.listen(PORT, () => {
+    console.log(`REPAIR NOTES SERVER RUNNING ON PORT: ${PORT}`.green.inverse)
+  })
+})
+
+mongoose.connection.on('error', (err) => {
+  console.log(err)
+  logEvents(
+    `${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`,
+    'mongoErrLog.log'
+  )
 })
