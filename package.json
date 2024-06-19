@@ -1,6 +1,19 @@
 {
   "name": "repair-notes-app",
+  "description": "repair notes app using mern stack",
   "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT"
+  "main": "server.js",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "colors": "^1.4.0",
+    "dotenv": "^16.4.5",
+    "nodemon": "^3.1.3"
+  },
+  "scripts": {
+    "start": "node server",
+    "dev": "nodemon server"
+  }
 }
