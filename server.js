@@ -4,6 +4,8 @@ require('dotenv').config({ path: '.env.local' })
 require('colors')
 
 // middleware imports
+const cors = require('cors')
+const corsOptions = require('./config/corsOptions')
 const { logger } = require('./middleware/logger')
 const errorHandler = require('./middleware/errorHandler')
 const cookieParser = require('cookie-parser')
@@ -13,6 +15,7 @@ const app = express()
 
 // middleware
 app.use(logger)
+app.use(cors(corsOptions))
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
