@@ -12,6 +12,10 @@ const { logger, logEvents } = require('./middleware/logger')
 const errorHandler = require('./middleware/errorHandler')
 const cookieParser = require('cookie-parser')
 
+// routes
+const rootRoute = require('./routes/root')
+const userRoutes = require('./routes/user.routes')
+
 const PORT = process.env.PORT || 3500
 const app = express()
 connectDB()
@@ -22,7 +26,9 @@ app.use(cors(corsOptions))
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
-app.use(require('./routes/root'))
+
+app.use('/', rootRoute)
+app.use('/users', userRoutes)
 
 app.all('*', (req, res) => {
   res.status(404)
