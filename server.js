@@ -3,13 +3,20 @@ const express = require('express')
 require('dotenv').config({ path: '.env.local' })
 require('colors')
 
+// middleware imports
+const { logger } = require('./middleware/logger')
+const errorHandler = require('./middleware/errorHandler')
+const cookieParser = require('cookie-parser')
+
 const PORT = process.env.PORT || 3500
 const app = express()
 
 // middleware
+app.use(logger)
 app.use(express.json())
-app.use('/', express.static(path.join(__dirname, 'public')))
-app.use('/', require('./routes/root'))
+app.use(cookieParser())
+app.use(express.static(path.join(__dirname, 'public')))
+app.use(require('./routes/root'))
 
 app.all('*', (req, res) => {
   res.status(404)
@@ -22,6 +29,8 @@ app.all('*', (req, res) => {
     res.type('txt').send('404 Not Found')
   }
 })
+
+app.use(errorHandler)
 
 app.listen(PORT, () => {
   console.log(`REPAIR NOTES SERVER RUNNING ON PORT: ${PORT}`.green.inverse)
